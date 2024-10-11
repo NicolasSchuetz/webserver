@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RPI Led Control</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script>
+        // Funktion für den POST-Request
+        function sendPostRequest(state) {
+            fetch('/led-control', {  // Hier die passende URL des Servers
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ledState: state }), // sendet den LED-Zustand als 'on' oder 'off'
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Fehler bei der Anfrage');
+            })
+            .then(data => {
+                console.log('Erfolg:', data);
+            })
+            .catch((error) => {
+                console.error('Fehler:', error);
+            });
+        }
+
+        // Event-Listener für den "On"-Button
+        function turnOn() {
+            sendPostRequest('on'); // Senden von 'on' für den Einschaltzustand
+            document.querySelector('.timestamp h3').innerHTML = new Date().toLocaleString();
+        }
+
+        // Event-Listener für den "Off"-Button
+        function turnOff() {
+            sendPostRequest('off'); // Senden von 'off' für den Ausschaltzustand
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>RPI Led Control</h1>
+    </div>
+
+    <div class="timestamp">
+        <h3></h3>
+    </div>
+
+    <div class="button-container">
+        <button class="btn on" onclick="turnOn()">On</button>
+        <button class="btn off" onclick="turnOff()">Off</button>
+    </div>
+</body>
+</html>
+
+
